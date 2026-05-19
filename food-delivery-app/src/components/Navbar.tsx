@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, X, Moon, SunMedium } from 'lucide-react';
+import { Menu, X, Moon, SunMedium, ShoppingCart } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
+import { useCart } from './CartProvider';
+import { CartDrawer } from './CartDrawer';
 
 const navItems = [
   { label: 'Home', to: '/' },
@@ -12,7 +14,9 @@ const navItems = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const { totalItems } = useCart();
 
   useEffect(() => {
     const storedTheme = window.localStorage.getItem('theme') as 'light' | 'dark' | null;
@@ -64,6 +68,20 @@ export function Navbar() {
           >
             {themeIcon}
           </button>
+          
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-slate-900/70 text-slate-100 transition hover:border-brand/50 hover:text-white"
+            aria-label="Open cart"
+          >
+            <ShoppingCart size={18} />
+            {totalItems > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-white shadow-glow">
+                {totalItems}
+              </span>
+            )}
+          </button>
+
           <Link
             to="/login"
             className="rounded-full border border-white/10 px-5 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-brand/40 hover:bg-white/5"
@@ -75,14 +93,30 @@ export function Navbar() {
           </Link>
         </div>
 
-        <button
-          onClick={() => setOpen((current) => !current)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-slate-900/70 text-slate-100 transition hover:border-brand/40 md:hidden"
-          aria-label="Open mobile menu"
-        >
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-3 md:hidden">
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-slate-900/70 text-slate-100 transition hover:border-brand/40"
+            aria-label="Open cart"
+          >
+            <ShoppingCart size={18} />
+            {totalItems > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-white shadow-glow">
+                {totalItems}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setOpen((current) => !current)}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-slate-900/70 text-slate-100 transition hover:border-brand/40"
+            aria-label="Open mobile menu"
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
+
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
       <AnimatePresence>
         {open && (

@@ -8,12 +8,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/ToastProvider';
+import { useCart } from '@/components/CartProvider';
 
 export function Home() {
   const progress = useScrollProgress();
   const [search, setSearch] = useState('Burgers, pizza, desserts');
   const [showDownload, setShowDownload] = useState(false);
   const { toast } = useToast();
+  const { addItem } = useCart();
 
   return (
     <main className="relative overflow-hidden px-4 sm:px-6 lg:px-8">
@@ -162,41 +164,49 @@ export function Home() {
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {popularItems.map((item) => (
             <motion.article
-              key={item.title}
+              key={item.id}
               whileHover={{ y: -8 }}
               className="group overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 shadow-soft transition duration-300"
             >
-              <div className="relative h-72 overflow-hidden bg-slate-900">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  loading="lazy"
-                  decoding="async"
-                  onError={(event) => {
-                    const target = event.currentTarget as HTMLImageElement;
-                    target.src = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='720' viewBox='0 0 900 720'%3E%3Crect width='900' height='720' fill='%2316202f'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Inter,ui-sans-serif,system-ui,sans-serif' font-size='36' fill='%23f8fafc'%3EImage unavailable%3C/text%3E%3C/svg%3E";
-                  }}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-x-0 bottom-0 rounded-b-[2rem] bg-gradient-to-t from-slate-950/90 to-transparent p-5">
-                  <div className="flex items-center justify-between text-sm text-slate-200">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-2">
-                      <Star size={14} /> {item.rating}
-                    </span>
-                    <span className="rounded-full bg-white/10 px-3 py-2">{item.time}</span>
+              <Link to={`/details/${item.id}`}>
+                <div className="relative h-72 overflow-hidden bg-slate-900">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    loading="lazy"
+                    decoding="async"
+                    onError={(event) => {
+                      const target = event.currentTarget as HTMLImageElement;
+                      target.src = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='720' viewBox='0 0 900 720'%3E%3Crect width='900' height='720' fill='%2316202f'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Inter,ui-sans-serif,system-ui,sans-serif' font-size='36' fill='%23f8fafc'%3EImage unavailable%3C/text%3E%3C/svg%3E";
+                    }}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 rounded-b-[2rem] bg-gradient-to-t from-slate-950/90 to-transparent p-5">
+                    <div className="flex items-center justify-between text-sm text-slate-200">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-2">
+                        <Star size={14} /> {item.rating}
+                      </span>
+                      <span className="rounded-full bg-white/10 px-3 py-2">{item.time}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
               <div className="space-y-4 p-6">
                 <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">{item.title}</h3>
-                    <p className="mt-2 text-sm text-slate-400">{item.description}</p>
-                  </div>
+                  <Link to={`/details/${item.id}`} className="hover:underline">
+                    <div>
+                      <h3 className="text-xl font-semibold text-white">{item.title}</h3>
+                      <p className="mt-2 text-sm text-slate-400">{item.description}</p>
+                    </div>
+                  </Link>
                   <span className="text-xl font-semibold text-brand">{item.price}</span>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <Button variant="ghost" className="h-12 w-full border-white/10 text-slate-100">
+                  <Button
+                    variant="ghost"
+                    className="h-12 w-full border-white/10 text-slate-100"
+                    onClick={() => addItem(item)}
+                  >
                     Add to cart
                   </Button>
                   <button className="inline-flex h-12 w-12 items-center justify-center rounded-3xl border border-white/10 bg-white/5 text-slate-200 transition hover:bg-white/10">
