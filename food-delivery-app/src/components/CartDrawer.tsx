@@ -29,7 +29,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="fixed inset-y-0 right-0 z-50 w-full max-w-md border-l border-white/10 bg-slate-950 p-6 shadow-2xl"
           >
-            <div className="flex flex-col">
+            <div className="flex h-full flex-col">
               <div className="flex items-center justify-between border-b border-white/10 pb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-white">Your Cart</h2>
