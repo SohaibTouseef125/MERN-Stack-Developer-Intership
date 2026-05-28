@@ -147,8 +147,12 @@ export default function Home() {
               transition={{ type: 'spring', stiffness: 220, damping: 16 }}
               className="glass-card rounded-[2rem] border-white/10 p-6 shadow-soft"
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-white/10 text-2xl shadow-glow">
-                {item.emoji}
+              <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-[1.25rem] bg-slate-900/50 p-0 shadow-glow ring-1 ring-white/10 transition-transform duration-300 group-hover:scale-110">
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className="h-full w-full object-cover transition-all duration-500 hover:scale-110"
+                />
               </div>
               <h3 className="mt-5 text-xl font-semibold text-white">{item.name}</h3>
               <p className="mt-3 text-sm leading-6 text-slate-300">{item.description}</p>
