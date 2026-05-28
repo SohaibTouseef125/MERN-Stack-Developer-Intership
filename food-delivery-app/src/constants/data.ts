@@ -5,7 +5,6 @@ export const categories = [
   { name: 'Burgers', description: 'Juicy stacked favorites.', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200&auto=format&fit=crop' },
   { name: 'BBQ', description: 'Smoky grilled perfection.', image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=200&auto=format&fit=crop' },
   { name: 'Desserts', description: 'Sweet finishing touches.', image: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?q=80&w=200&auto=format&fit=crop' },
-  { name: 'Drinks', description: 'Cold crafted refreshers.', image: 'https://images.unsplash.com/photo-1544145945-f904253d0c7b?q=80&w=200&auto=format&fit=crop' },
   { name: 'Fast Food', description: 'Quick taste wins.', image: 'https://images.unsplash.com/photo-1561758033-d89a9ad46330?q=80&w=200&auto=format&fit=crop' }
 ];
 
