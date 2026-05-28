@@ -1,6 +1,9 @@
-import { useParams, Link } from 'react-router-dom';
+'use client';
+
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Clock3, ArrowLeft, Heart, Share2, ShoppingCart, Plus, Minus, SearchIcon, ZoomIn, ZoomOut } from 'lucide-react';
+import { Star, Clock3, ArrowLeft, Heart, Share2, ShoppingCart, Plus, Minus, ZoomIn, ZoomOut } from 'lucide-react';
 import { popularItems } from '@/constants/data';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,8 +12,9 @@ import { useCart } from '@/components/CartProvider';
 import { useEffect, useState, useRef } from 'react';
 import { cn } from '@/utils/clsx';
 
-export function ProductDetail() {
-  const { id } = useParams<{ id: string }>();
+export default function ProductDetailPage() {
+  const params = useParams();
+  const id = params && params.id ? (params.id as string) : '';
   const { toast } = useToast();
   const { addItem } = useCart();
   const [loading, setLoading] = useState(true);
@@ -47,7 +51,7 @@ export function ProductDetail() {
 
     element.addEventListener('wheel', handleWheelEvent, { passive: false });
     return () => element.removeEventListener('wheel', handleWheelEvent);
-  }, []);
+  }, [loading]); // re-run if loading state changes, to attach to the rendered element
 
   const handleQuantityChange = (delta: number) => {
     setQuantity((prev) => Math.max(1, prev + delta));
@@ -56,7 +60,7 @@ export function ProductDetail() {
   if (loading) {
     return (
       <div className="flex min-h-[70vh] items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand border-t-transparent" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
       </div>
     );
   }
@@ -66,7 +70,7 @@ export function ProductDetail() {
       <div className="mx-auto max-w-7xl px-4 py-24 text-center sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-white">Product not found</h2>
         <p className="mt-4 text-slate-400">The product you're looking for doesn't exist or has been removed.</p>
-        <Link to="/" className="mt-8 inline-block">
+        <Link href="/" className="mt-8 inline-block">
           <Button variant="primary">Back to Home</Button>
         </Link>
       </div>
@@ -77,12 +81,12 @@ export function ProductDetail() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <Link to="/" className="inline-flex items-center gap-2 text-slate-400 transition hover:text-white">
+      <Link href="/" className="inline-flex items-center gap-2 text-slate-400 transition hover:text-white mb-6">
         <ArrowLeft size={20} />
         <span>Back to menu</span>
       </Link>
 
-      <div className="mt-8 grid gap-12 lg:grid-cols-[auto_1fr_1fr]">
+      <div className="grid gap-12 lg:grid-cols-[auto_1fr_1fr]">
         {/* Thumbnails */}
         <div className="flex flex-row gap-4 lg:flex-col lg:gap-5 order-2 lg:order-1">
           {images.map((img: string, idx: number) => (
@@ -94,12 +98,12 @@ export function ProductDetail() {
               }}
               className={cn(
                 "group relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl border transition-all duration-300 sm:h-24 sm:w-24",
-                selectedImage === img ? "border-brand ring-2 ring-brand/20" : "border-white/10 hover:border-white/30"
+                selectedImage === img ? "border-brand-500 ring-2 ring-brand-500/20" : "border-white/10 hover:border-white/30"
               )}
             >
               <img src={img} alt="" className="h-full w-full object-cover" />
               <div className={cn(
-                "absolute inset-0 bg-brand/10 transition-opacity duration-300",
+                "absolute inset-0 bg-brand-500/10 transition-opacity duration-300",
                 selectedImage === img ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               )} />
             </button>
@@ -141,10 +145,21 @@ export function ProductDetail() {
           </div>
 
           <div className="absolute right-6 top-6 flex flex-col gap-3">
-            <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-slate-950/80 text-white backdrop-blur-xl transition hover:bg-slate-900">
+            <button 
+              onClick={() => toast({ title: 'Added to Favorites', message: `${product.title} saved to favorites.`, variant: 'success' })}
+              className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-slate-950/80 text-white backdrop-blur-xl transition hover:bg-slate-900"
+            >
               <Heart size={20} />
             </button>
-            <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-slate-950/80 text-white backdrop-blur-xl transition hover:bg-slate-900">
+            <button 
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast({ title: 'Link Copied', message: 'Product URL copied to clipboard.', variant: 'success' });
+                }
+              }}
+              className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-slate-950/80 text-white backdrop-blur-xl transition hover:bg-slate-900"
+            >
               <Share2 size={20} />
             </button>
           </div>
@@ -158,7 +173,7 @@ export function ProductDetail() {
         >
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <Badge className="bg-brand/10 text-brand">Popular Choice</Badge>
+              <Badge className="bg-brand-500/10 text-brand-500">Popular Choice</Badge>
               <div className="flex items-center gap-1 text-sm text-slate-400">
                 <Clock3 size={16} />
                 <span>{product.time} delivery</span>
@@ -215,7 +230,14 @@ export function ProductDetail() {
               <ShoppingCart size={20} />
               Add to Cart
             </Button>
-            <Button variant="secondary" className="h-14 px-8">
+            <Button 
+              variant="secondary" 
+              className="h-14 px-8"
+              onClick={() => {
+                addItem(product, quantity);
+                toast({ title: 'Instant Checkout', message: 'Proceeding to checkout preview.', variant: 'success' });
+              }}
+            >
               Buy Now
             </Button>
           </div>

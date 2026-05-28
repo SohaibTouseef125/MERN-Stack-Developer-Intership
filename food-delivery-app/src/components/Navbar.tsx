@@ -1,9 +1,13 @@
+'use client';
+
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, X, Moon, SunMedium, ShoppingCart } from 'lucide-react';
-import { Link, NavLink } from 'react-router-dom';
+import { Menu, X, Moon, SunMedium, ShoppingCart, LogOut, User } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCart } from './CartProvider';
 import { CartDrawer } from './CartDrawer';
+import { useAuth } from './AuthProvider';
 
 const navItems = [
   { label: 'Home', to: '/' },
@@ -17,6 +21,8 @@ export function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const { totalItems } = useCart();
+  const { user, isAuthenticated, logout } = useAuth();
+  const pathname = usePathname();
 
   useEffect(() => {
     const storedTheme = window.localStorage.getItem('theme') as 'light' | 'dark' | null;
@@ -39,25 +45,28 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-3 text-lg font-semibold text-white">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-orange-400 text-sm shadow-glow">
+        <Link href="/" className="flex items-center gap-3 text-lg font-semibold text-white">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-orange-400 text-sm shadow-glow font-bold">
             F
           </span>
           FlavorWave
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.label}
-              to={item.to}
-              className={({ isActive }) =>
-                `text-sm font-medium transition ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}`
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
+          {navItems.map((item) => {
+            const isActive = pathname === item.to || (item.to !== '/' && pathname.startsWith(item.to));
+            return (
+              <Link
+                key={item.label}
+                href={item.to}
+                className={`text-sm font-medium transition ${
+                  isActive ? 'text-white' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -82,15 +91,37 @@ export function Navbar() {
             )}
           </button>
 
-          <Link
-            to="/login"
-            className="rounded-full border border-white/10 px-5 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-brand/40 hover:bg-white/5"
-          >
-            Login
-          </Link>
-          <Link to="/signup" className="rounded-full bg-gradient-to-r from-brand to-orange-400 px-5 py-2.5 text-sm font-semibold text-white shadow-glow transition hover:scale-[1.01]">
-            Signup
-          </Link>
+          {isAuthenticated && user ? (
+            <div className="flex items-center gap-4 ml-2">
+              <div className="flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-3.5 py-1.5 text-sm text-slate-200">
+                <User size={14} className="text-brand" />
+                <span className="font-medium truncate max-w-[100px]">{user.name}</span>
+              </div>
+              <button
+                onClick={logout}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 text-red-400 transition hover:bg-red-500/20 hover:text-red-300"
+                title="Logout"
+                aria-label="Logout"
+              >
+                <LogOut size={16} />
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="rounded-full border border-white/10 px-5 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-brand/40 hover:bg-white/5"
+              >
+                Login
+              </Link>
+              <Link 
+                href="/signup" 
+                className="rounded-full bg-gradient-to-r from-brand to-orange-400 px-5 py-2.5 text-sm font-semibold text-white shadow-glow transition hover:scale-[1.01]"
+              >
+                Signup
+              </Link>
+            </>
+          )}
         </div>
 
         <div className="flex items-center gap-3 md:hidden">
@@ -131,7 +162,7 @@ export function Navbar() {
               {navItems.map((item) => (
                 <Link
                   key={item.label}
-                  to={item.to}
+                  href={item.to}
                   onClick={() => setOpen(false)}
                   className="block rounded-3xl px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/5"
                 >
@@ -146,20 +177,41 @@ export function Navbar() {
                   {themeIcon}
                   <span className="ml-2">Theme</span>
                 </button>
-                <Link
-                  to="/login"
-                  onClick={() => setOpen(false)}
-                  className="rounded-3xl border border-white/10 px-4 py-3 text-center text-sm font-semibold text-slate-100 transition hover:bg-white/5"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/signup"
-                  onClick={() => setOpen(false)}
-                  className="rounded-3xl bg-gradient-to-r from-brand to-orange-400 px-4 py-3 text-center text-sm font-semibold text-white shadow-glow"
-                >
-                  Signup
-                </Link>
+
+                {isAuthenticated && user ? (
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-2 rounded-3xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-slate-100">
+                      <User size={16} className="text-brand" />
+                      <span>Logged in as <b>{user.name}</b></span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setOpen(false);
+                        logout();
+                      }}
+                      className="rounded-3xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-center text-sm font-semibold text-red-400 transition hover:bg-red-500/20"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      onClick={() => setOpen(false)}
+                      className="rounded-3xl border border-white/10 px-4 py-3 text-center text-sm font-semibold text-slate-100 transition hover:bg-white/5"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setOpen(false)}
+                      className="rounded-3xl bg-gradient-to-r from-brand to-orange-400 px-4 py-3 text-center text-sm font-semibold text-white shadow-glow"
+                    >
+                      Signup
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

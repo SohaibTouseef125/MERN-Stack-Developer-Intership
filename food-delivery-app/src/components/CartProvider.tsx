@@ -1,5 +1,8 @@
+'use client';
+
 import { createContext, useContext, useState, useMemo, useCallback, ReactNode } from 'react';
 import { useToast } from './ToastProvider';
+
 
 export interface CartItem {
   id: string;

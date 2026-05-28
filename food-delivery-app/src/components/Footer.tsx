@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Instagram, Facebook, Twitter, Mail } from 'lucide-react';
 
 export function Footer() {
@@ -9,7 +9,7 @@ export function Footer() {
           <p className="text-sm uppercase tracking-[0.24em] text-orange-200/70">FlavorWave</p>
           <h3 className="mt-4 text-2xl font-semibold text-white">Premium food delivery UI for modern startups.</h3>
           <p className="mt-4 max-w-md text-sm leading-7 text-slate-400">
-            A polished React-first experience with glassmorphism, motion, responsive layout, and premium UI patterns.
+            A polished Next-first experience with glassmorphism, motion, responsive layout, and premium UI patterns.
           </p>
         </div>
 
@@ -17,9 +17,9 @@ export function Footer() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-200/70">Explore</p>
             <div className="mt-4 space-y-3 text-sm">
-              <Link to="/" className="block text-slate-400 transition hover:text-white">Home</Link>
-              <Link to="/login" className="block text-slate-400 transition hover:text-white">Login</Link>
-              <Link to="/signup" className="block text-slate-400 transition hover:text-white">Signup</Link>
+              <Link href="/" className="block text-slate-400 transition hover:text-white">Home</Link>
+              <Link href="/login" className="block text-slate-400 transition hover:text-white">Login</Link>
+              <Link href="/signup" className="block text-slate-400 transition hover:text-white">Signup</Link>
             </div>
           </div>
 
@@ -40,10 +40,10 @@ export function Footer() {
               <p className="text-sm text-slate-300">Sign up for product updates, design inspiration, and early access perks.</p>
             </div>
             <div className="flex items-center gap-3 text-slate-300">
-              <Instagram size={18} />
-              <Facebook size={18} />
-              <Twitter size={18} />
-              <Mail size={18} />
+              <Instagram size={18} className="cursor-pointer hover:text-white transition" />
+              <Facebook size={18} className="cursor-pointer hover:text-white transition" />
+              <Twitter size={18} className="cursor-pointer hover:text-white transition" />
+              <Mail size={18} className="cursor-pointer hover:text-white transition" />
             </div>
           </div>
         </div>

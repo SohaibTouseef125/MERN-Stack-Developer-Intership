@@ -1,6 +1,9 @@
+'use client';
+
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+
 
 interface ToastItem {
   id: string;

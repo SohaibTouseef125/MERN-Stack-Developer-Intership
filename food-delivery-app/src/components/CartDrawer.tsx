@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
 import { useCart } from './CartProvider';
@@ -10,6 +13,17 @@ interface CartDrawerProps {
 
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { items, removeItem, updateQuantity, totalPrice, totalItems } = useCart();
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   return (
     <AnimatePresence>
@@ -61,7 +75,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   <div className="space-y-6">
                     {items.map((item) => (
                       <div key={item.id} className="flex gap-4">
-                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-white/10">
+                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-slate-900">
                           <img
                             src={item.image}
                             alt={item.title}
@@ -72,7 +86,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           <div className="flex items-start justify-between gap-2">
                             <div>
                               <h3 className="font-semibold text-white">{item.title}</h3>
-                              <p className="mt-1 text-sm text-brand">{item.price}</p>
+                              <p className="mt-1 text-sm text-brand-500">{item.price}</p>
                             </div>
                             <button
                               onClick={() => removeItem(item.id)}

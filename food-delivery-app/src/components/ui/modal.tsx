@@ -1,5 +1,8 @@
+'use client';
+
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+
 import type { ReactNode } from 'react';
 
 interface ModalProps {

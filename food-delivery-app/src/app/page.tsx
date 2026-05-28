@@ -1,7 +1,9 @@
+'use client';
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock3, Heart, MapPin, MessageSquare, Star, Truck, Wallet, Wifi } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { categories, features, popularItems, testimonials } from '@/constants/data';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +12,7 @@ import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/ToastProvider';
 import { useCart } from '@/components/CartProvider';
 
-export function Home() {
+export default function Home() {
   const progress = useScrollProgress();
   const [search, setSearch] = useState('Burgers, pizza, desserts');
   const [showDownload, setShowDownload] = useState(false);
@@ -19,15 +21,18 @@ export function Home() {
 
   return (
     <main className="relative overflow-hidden px-4 sm:px-6 lg:px-8">
-      <div className="fixed inset-x-0 top-0 z-20 h-1 bg-white/5 backdrop-blur-xl">
-        <div className="h-full bg-gradient-to-r from-brand via-orange-400 to-slate-100" style={{ width: `${progress}%` }} />
+      <div className="fixed inset-x-0 top-0 z-50 h-1 bg-white/5 backdrop-blur-xl">
+        <div 
+          className="h-full bg-gradient-to-r from-brand-500 via-orange-400 to-slate-100 transition-all duration-100" 
+          style={{ width: `${progress}%` }} 
+        />
       </div>
 
       <section className="relative mx-auto max-w-7xl py-20 lg:py-24">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div className="relative z-10 space-y-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-white/5 px-4 py-2 text-sm text-slate-100 shadow-soft backdrop-blur-xl">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-brand text-white shadow-glow">🔥</span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-white/5 px-4 py-2 text-sm text-slate-100 shadow-soft backdrop-blur-xl">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-glow">🔥</span>
               <span>Fast, premium delivery from your favorite kitchens.</span>
             </div>
             <div>
@@ -52,15 +57,17 @@ export function Home() {
                   />
                   <button
                     onClick={() => toast({ title: 'Search started', message: 'Dummy search is ready for you.', variant: 'info' })}
-                    className="inline-flex h-12 items-center rounded-2xl bg-gradient-to-r from-brand to-orange-400 px-5 text-sm font-semibold text-white shadow-glow transition hover:brightness-110"
+                    className="inline-flex h-12 items-center rounded-2xl bg-gradient-to-r from-brand-500 to-orange-400 px-5 text-sm font-semibold text-white shadow-glow transition hover:brightness-110"
                   >
                     Search
                   </button>
                 </div>
               </div>
-              <Button variant="secondary" className="h-12 px-6">
-                Explore menu
-              </Button>
+              <Link href="/#menu">
+                <Button variant="secondary" className="h-full px-6 w-full sm:w-auto">
+                  Explore menu
+                </Button>
+              </Link>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">
@@ -97,7 +104,7 @@ export function Home() {
                 <h2 className="mt-3 text-2xl font-semibold text-white">Sunrise Sizzle Burger</h2>
                 <p className="mt-2 text-sm text-slate-400">A premium burger with smoky bacon, soft brioche, and spicy aioli.</p>
               </div>
-              <div className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] bg-gradient-to-br from-orange-400 to-brand text-white shadow-glow">
+              <div className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] bg-gradient-to-br from-orange-400 to-brand-500 text-white shadow-glow flex-shrink-0">
                 <span className="text-3xl">🍔</span>
               </div>
             </div>
@@ -127,7 +134,7 @@ export function Home() {
             <p className="text-sm uppercase tracking-[0.24em] text-orange-200/80">Food categories</p>
             <h2 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">Fresh categories for every craving.</h2>
           </div>
-          <Button variant="ghost" className="h-12 px-5 text-white/80 hover:text-white">
+          <Button variant="ghost" className="h-12 px-5 text-white/80 hover:text-white" onClick={() => toast({ title: 'Menu Navigation', message: 'Full menu is currently mocked in this view.', variant: 'info' })}>
             View full menu
           </Button>
         </div>
@@ -156,9 +163,11 @@ export function Home() {
             <p className="text-sm uppercase tracking-[0.24em] text-orange-200/80">Popular now</p>
             <h2 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">Top-rated dishes people can’t stop ordering.</h2>
           </div>
-          <Button variant="secondary" className="h-12 px-6">
-            Order now
-          </Button>
+          <Link href="/#menu">
+            <Button variant="secondary" className="h-12 px-6">
+              Order now
+            </Button>
+          </Link>
         </div>
 
         <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -168,7 +177,7 @@ export function Home() {
               whileHover={{ y: -8 }}
               className="group overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 shadow-soft transition duration-300"
             >
-              <Link to={`/details/${item.id}`}>
+              <Link href={`/details/${item.id}`}>
                 <div className="relative h-72 overflow-hidden bg-slate-900">
                   <img
                     src={item.image}
@@ -193,13 +202,13 @@ export function Home() {
               </Link>
               <div className="space-y-4 p-6">
                 <div className="flex items-center justify-between gap-4">
-                  <Link to={`/details/${item.id}`} className="hover:underline">
+                  <Link href={`/details/${item.id}`} className="hover:underline">
                     <div>
                       <h3 className="text-xl font-semibold text-white">{item.title}</h3>
                       <p className="mt-2 text-sm text-slate-400">{item.description}</p>
                     </div>
                   </Link>
-                  <span className="text-xl font-semibold text-brand">{item.price}</span>
+                  <span className="text-xl font-semibold text-brand-500">{item.price}</span>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <Button
@@ -225,7 +234,7 @@ export function Home() {
             <p className="text-sm uppercase tracking-[0.24em] text-orange-200/80">Core features</p>
             <h2 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">Everything for a reliable delivery experience.</h2>
           </div>
-          <Button variant="ghost" className="h-12 px-5 text-white/80 hover:text-white">
+          <Button variant="ghost" className="h-12 px-5 text-white/80 hover:text-white" onClick={() => toast({ title: 'Features Details', message: 'Features list is descriptive in this prototype.', variant: 'info' })}>
             Explore features
           </Button>
         </div>
@@ -237,7 +246,7 @@ export function Home() {
               whileHover={{ y: -6 }}
               className="glass-card rounded-[2rem] border-white/10 p-7 shadow-soft"
             >
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-brand/10 text-brand">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-brand-500/10 text-brand-500">
                 {feature.accent === 'speed' ? <Truck size={24} /> : null}
                 {feature.accent === 'map' ? <MapPin size={24} /> : null}
                 {feature.accent === 'lock' ? <Wallet size={24} /> : null}
@@ -257,7 +266,7 @@ export function Home() {
             <p className="text-sm uppercase tracking-[0.24em] text-orange-200/80">Testimonials</p>
             <h2 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">Loved by food lovers and partners alike.</h2>
           </div>
-          <Button variant="secondary" className="h-12 px-6">
+          <Button variant="secondary" className="h-12 px-6" onClick={() => toast({ title: 'Waitlist', message: 'You have been registered for our launch details.', variant: 'success' })}>
             Join the waitlist
           </Button>
         </div>
@@ -270,16 +279,16 @@ export function Home() {
               className="glass-card rounded-[2rem] border-white/10 p-6 shadow-soft"
             >
               <div className="flex items-center gap-4">
-                <img className="h-14 w-14 rounded-3xl object-cover" src={item.avatar} alt={item.name} />
+                <img className="h-14 w-14 rounded-3xl object-cover bg-slate-800" src={item.avatar} alt={item.name} />
                 <div>
                   <p className="text-lg font-semibold text-white">{item.name}</p>
                   <p className="text-sm text-slate-400">{item.role}</p>
                 </div>
               </div>
               <p className="mt-5 text-sm leading-7 text-slate-300">“{item.quote}”</p>
-              <div className="mt-5 flex items-center gap-2 text-brand">
+              <div className="mt-5 flex items-center gap-2 text-brand-500">
                 {[...Array(5)].map((_, index) => (
-                  <Star key={index} size={16} />
+                  <Star key={index} size={16} fill="currentColor" />
                 ))}
               </div>
             </motion.div>
@@ -289,7 +298,7 @@ export function Home() {
 
       <section className="mx-auto max-w-7xl pb-24">
         <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-r from-slate-900/90 via-slate-950/90 to-slate-900/90 p-10 shadow-glow">
-          <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-brand/10 via-transparent to-transparent" />
+          <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-brand-500/10 via-transparent to-transparent" />
           <div className="relative grid gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
             <div className="space-y-5">
               <Badge>App download</Badge>
@@ -310,7 +319,7 @@ export function Home() {
               <div className="absolute -right-10 top-4 h-32 w-32 rounded-full bg-orange-400/10 blur-3xl" />
               <div className="h-[420px] rounded-[2rem] bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.14),_transparent_45%)] p-6 sm:h-[500px]">
                 <div className="relative mx-auto h-full w-full max-w-xs rounded-[2rem] bg-gradient-to-b from-slate-900 to-slate-950 p-5 shadow-glow">
-                  <div className="h-12 w-12 rounded-3xl bg-gradient-to-r from-brand to-orange-400" />
+                  <div className="h-12 w-12 rounded-3xl bg-gradient-to-r from-brand-500 to-orange-400" />
                   <div className="mt-8 space-y-4">
                     <div className="h-4 w-3/4 rounded-full bg-white/10" />
                     <div className="h-4 w-full rounded-full bg-white/10" />
@@ -335,11 +344,11 @@ export function Home() {
         onClose={() => setShowDownload(false)}
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          <button className="rounded-3xl bg-slate-900/90 px-5 py-4 text-left text-white transition hover:bg-slate-800">
+          <button className="rounded-3xl bg-slate-900/90 px-5 py-4 text-left text-white transition hover:bg-slate-800 border border-white/5" onClick={() => { setShowDownload(false); toast({ title: 'Download Started', message: 'Downloading package for iOS.', variant: 'success' }); }}>
             <p className="text-sm text-slate-400">App Store</p>
             <p className="mt-2 text-lg font-semibold">Download for iOS</p>
           </button>
-          <button className="rounded-3xl bg-slate-900/90 px-5 py-4 text-left text-white transition hover:bg-slate-800">
+          <button className="rounded-3xl bg-slate-900/90 px-5 py-4 text-left text-white transition hover:bg-slate-800 border border-white/5" onClick={() => { setShowDownload(false); toast({ title: 'Download Started', message: 'Downloading package for Android.', variant: 'success' }); }}>
             <p className="text-sm text-slate-400">Google Play</p>
             <p className="mt-2 text-lg font-semibold">Download for Android</p>
           </button>

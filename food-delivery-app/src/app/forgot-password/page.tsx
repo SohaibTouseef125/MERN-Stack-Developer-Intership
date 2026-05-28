@@ -1,16 +1,38 @@
-import { FormEvent } from 'react';
+'use client';
+
+import { FormEvent, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ToastProvider';
 
-export function ForgotPassword() {
+export default function ForgotPasswordPage() {
   const { toast } = useToast();
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    toast({ title: 'Reset email sent', message: 'Check your inbox for the password reset link.', variant: 'success' });
+    setLoading(true);
+
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    
+    toast({ 
+      title: 'Reset Email Sent', 
+      message: 'Check your inbox for the password reset link. Redirecting you to reset setup...', 
+      variant: 'success' 
+    });
+
+    setLoading(false);
+
+    // Redirect to the Reset Password page to allow testing the password update UI
+    setTimeout(() => {
+      router.push('/reset-password');
+    }, 2000);
   };
 
   return (
@@ -32,16 +54,23 @@ export function ForgotPassword() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <Input label="Email" type="email" placeholder="you@example.com" required />
-            <Button type="submit" className="w-full h-14 text-base">
-              Send reset link
+            <Input 
+              label="Email" 
+              type="email" 
+              placeholder="you@example.com" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+            />
+            <Button type="submit" className="w-full h-14 text-base" disabled={loading}>
+              {loading ? 'Sending link...' : 'Send reset link'}
             </Button>
           </form>
         </div>
 
         <div className="mt-8 text-center text-sm text-slate-400">
           Remembered your password?{' '}
-          <Link to="/login" className="font-semibold text-white hover:text-brand">
+          <Link href="/login" className="font-semibold text-white hover:text-brand-500">
             Back to login
           </Link>
         </div>
